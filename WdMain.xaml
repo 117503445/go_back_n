@@ -1,0 +1,18 @@
+﻿<Window x:Class="go_back_n.WdMain"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:go_back_n"
+        mc:Ignorable="d"
+        Title="回退 N 帧" Height="800" Width="1500" WindowStartupLocation="CenterScreen">
+    <Canvas x:Name="CanvasMain">
+        <Button x:Name="BtnDebug1" Content="BtnDebug1" Click="BtnDebug1_Click" Height="39" Canvas.Left="29" Canvas.Top="513" Width="128" Visibility="Hidden"/>
+        <Button x:Name="BtnDebug2" Content="BtnDebug2" Click="BtnDebug2_Click" Height="39" Canvas.Left="29" Canvas.Top="583" Width="128" Visibility="Hidden"/>
+        <UniformGrid Name="UfgSender" Height="300" Width="300" Canvas.Left="217" Canvas.Top="384"></UniformGrid>
+        <UniformGrid Name="UfgReceiver" Height="300" Width="300" Canvas.Left="987" Canvas.Top="384"></UniformGrid>
+        <TextBox Height="215" Width="313" Canvas.Left="595" Canvas.Top="384" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Center" VerticalContentAlignment="Center" AcceptsReturn ="True" FontSize="20" TextWrapping="Wrap">
+            左边是发送者,右边是接收者 &#13; 左键单击 帧 可以模拟帧损坏, 右键单击 帧 可以模拟帧丢失 为了更好的展示效果,发送方发包间隔最少为1秒
+        </TextBox>
+    </Canvas>
+</Window>
