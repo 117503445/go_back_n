@@ -12,7 +12,8 @@
         <UniformGrid Name="UfgSender" Height="300" Width="300" Canvas.Left="217" Canvas.Top="384"></UniformGrid>
         <UniformGrid Name="UfgReceiver" Height="300" Width="300" Canvas.Left="987" Canvas.Top="384"></UniformGrid>
         <TextBox Height="215" Width="313" Canvas.Left="595" Canvas.Top="384" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Center" VerticalContentAlignment="Center" AcceptsReturn ="True" FontSize="20" TextWrapping="Wrap">
-            左边是发送者,右边是接收者 &#13; 左键单击 帧 可以模拟帧损坏, 右键单击 帧 可以模拟帧丢失 为了更好的展示效果,发送方发包间隔最少为1秒
+            左边是发送者,右边是接收者 &#13; 左键单击 帧 可以模拟帧损坏, 右键单击 帧 可以模拟帧丢失; 单击右侧按钮,开始流量控制 ;为了更好的展示效果,发送方发包间隔最少为1秒,发送窗口 大小 5
         </TextBox>
+        <Button x:Name="BtnBufferFull" Height="43" Width="165" Canvas.Left="1250" Canvas.Top="291" Click="BtnBufferFull_Click" >缓冲区满载</Button>
     </Canvas>
 </Window>

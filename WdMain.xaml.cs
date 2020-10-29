@@ -93,6 +93,10 @@ namespace go_back_n
 
         private void Frame_ReceiverReceived(object sender, string e)
         {
+            if (isBufferFull)
+            {
+                return;
+            }
             int currentIndex = int.Parse(e);
             if (receiver_receiving_frame == currentIndex)
             {
@@ -121,6 +125,21 @@ namespace go_back_n
         private int ParseIDFromAck(string ack)
         {
             return int.Parse(ack.Split(' ')[1]);
+        }
+
+        private bool isBufferFull = false;
+        private void BtnBufferFull_Click(object sender, RoutedEventArgs e)
+        {
+            if (isBufferFull)
+            {
+                BtnBufferFull.Background = new SolidColorBrush(Colors.White);
+            }
+            else
+            {
+                BtnBufferFull.Background = new SolidColorBrush(Colors.Red);
+
+            }
+            isBufferFull = !isBufferFull;
         }
     }
 }
