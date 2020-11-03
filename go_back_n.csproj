@@ -59,6 +59,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CRC32.cs" />
     <Compile Include="Frame.cs" />
     <Compile Include="SendingFrameList.cs" />
     <Compile Include="SlidingWindow.cs" />

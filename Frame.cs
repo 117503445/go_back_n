@@ -20,7 +20,7 @@ namespace go_back_n
         public static event EventHandler<string> ReceiverReceived;
         public bool IsBroken { get; set; } = false;
         public bool IsLost { get; set; } = false;
-
+        public ulong CRC { get; }
         public string Content { get; }
 
         private void Show()
@@ -66,7 +66,7 @@ namespace go_back_n
         {
             this.isFromSender = isFromSender;
             this.Content = value;
-
+            this.CRC = new CRC32Cls().GetCRC32Str(Content);
             Canvas.Children.Add(button);
         }
         public void ShowAndMove()
