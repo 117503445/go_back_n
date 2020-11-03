@@ -16,12 +16,14 @@ namespace go_back_n
         public static Canvas Canvas;
         private readonly bool isFromSender;
 
-        public static event EventHandler<string> SenderReceived;
-        public static event EventHandler<string> ReceiverReceived;
+        public static event EventHandler<Frame> SenderReceived;
+        public static event EventHandler<Frame> ReceiverReceived;
         public bool IsBroken { get; set; } = false;
         public bool IsLost { get; set; } = false;
         public ulong CRC { get; }
-        public string Content { get; }
+        public string ID { get; }
+
+        public string Message { get; }
 
         private void Show()
         {
@@ -40,8 +42,8 @@ namespace go_back_n
 
                 button.Width = 100;
                 button.Height = 100;
-                button.Content = Content;
-                button.FontSize = 22;
+                button.Content = $"{ID}\n{Message}";
+                button.FontSize = 12;
                 button.AddHandler(Button.MouseLeftButtonDownEvent, new MouseButtonEventHandler(this.Button_MouseLeftButtonDown), true);
                 button.MouseRightButtonDown += Button_MouseRightButtonDown;
             }
@@ -62,12 +64,14 @@ namespace go_back_n
             IsBroken = true;
         }
 
-        public Frame(string value, bool isFromSender)
+        public Frame(string value, bool isFromSender, string message)
         {
             this.isFromSender = isFromSender;
-            this.Content = value;
-            this.CRC = new CRC32Cls().GetCRC32Str(Content);
+            this.ID = value;
+            this.CRC = new CRC32Cls().GetCRC32Str(ID);
+            Message = Padding.GetPaddingString(message);
             Canvas.Children.Add(button);
+
         }
         public void ShowAndMove()
         {
@@ -112,11 +116,11 @@ namespace go_back_n
             {
                 if (isFromSender)
                 {
-                    ReceiverReceived?.Invoke(sender, Content);
+                    ReceiverReceived?.Invoke(sender, this);
                 }
                 else
                 {
-                    SenderReceived?.Invoke(sender, Content);
+                    SenderReceived?.Invoke(sender, this);
                 }
             }
         }

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -25,6 +25,8 @@ namespace go_back_n
         private SlidingWindow senderSlidingWindow;
         private SlidingWindow receiverSlidingWindow;
         private SendingFrameList sendingFrameList;
+
+        private MessageList messageList = new MessageList();
         public WdMain()
         {
             InitializeComponent();
@@ -36,18 +38,27 @@ namespace go_back_n
             sendingFrameList = new SendingFrameList();
             Frame.Canvas = CanvasMain;
 
+
+
             for (int i = 0; i < App.SenderWindowSize; i++)
             {
-                sendingFrameList.Add(new Frame(i.ToString(), true));
+                sendingFrameList.Add(new Frame(i.ToString(), true, messageList.GetMessageById(i)));
+            }
+
+            if (File.Exists("out.txt"))
+            {
+                File.Delete("out.txt");
             }
         }
+
 
         private void TimerSenderTimeOut_Tick(object sender, EventArgs e)
         {
             sendingFrameList.Clear();
             for (int i = 0; i < App.SenderWindowSize; i++)
             {
-                sendingFrameList.Add(new Frame(((sender_sending_frame + i) % 16).ToString(), true));
+                int newid = ((sender_sending_frame + i) % 16);
+                sendingFrameList.Add(new Frame(newid.ToString(), true, messageList.GetMessageById(newid)));
             }
             //sendingFrameList.Add(new Frame(sender_sending_frame.ToString(), true));
         }
@@ -60,66 +71,67 @@ namespace go_back_n
             IsEnabled = true
         };
         int lastACK = -1;
-        private void Frame_SenderReceived(object sender, string e)
+        private void Frame_SenderReceived(object sender, Frame e)
         {
-            int id = ParseIDFromAck(e);
-            if (id == lastACK)
+            int id = ParseIDFromAck(e.ID);
+
+            if (id - 1 >= sender_sending_frame || id >= (sender_sending_frame + App.SenderWindowSize) % 16)
             {
+                // sender_sending_frame = (sender_sending_frame + 1) % 16;
+                sender_sending_frame = id;
 
-            }
-            else
-            {
-                if (id - 1 >= sender_sending_frame || id >= (sender_sending_frame + App.SenderWindowSize) % 16)
-                {
-                    // sender_sending_frame = (sender_sending_frame + 1) % 16;
-                    sender_sending_frame = id;
+                TimerSenderTimeOut.Stop();
+                TimerSenderTimeOut.Start();
 
-                    TimerSenderTimeOut.Stop();
-                    TimerSenderTimeOut.Start();
+                senderSlidingWindow.Draw(sender_sending_frame);
 
-                    senderSlidingWindow.Draw(sender_sending_frame);
-                }
 
                 //sendingFrameList.Clear();
                 //for (int i = 0; i < App.SenderWindowSize; i++)
                 //{
                 //    sendingFrameList.Add(new Frame(((sender_sending_frame + i) % 16).ToString(), true));
                 //}
-                sendingFrameList.Add(new Frame(((sender_sending_frame + App.SenderWindowSize - 1) % 16).ToString(), true));
-                lastACK = id;
-            }
 
+
+
+
+            }
+            int newid = ((sender_sending_frame + App.SenderWindowSize - 1) % 16);
+            sendingFrameList.Add(new Frame(newid.ToString(), true, messageList.GetMessageById(newid)));
+            lastACK = id;
+            messageList.SetAlreadySend(id);
         }
 
-        private void Frame_ReceiverReceived(object sender, string e)
+        private void Frame_ReceiverReceived(object sender, Frame e)
         {
             if (isBufferFull)
             {
                 return;
             }
-            int currentIndex = int.Parse(e);
+
+            int currentIndex = int.Parse(e.ID);
             if (receiver_receiving_frame == currentIndex)
             {
                 receiver_receiving_frame = (receiver_receiving_frame + 1) % 16;
-
+                File.AppendAllText("out.txt", go_back_n.Padding.GetRawString(e.Message) + "\n");
             }
             receiverSlidingWindow.Draw(receiver_receiving_frame);
-            Frame frame = new Frame($"ACK {receiver_receiving_frame}", false);
+            Frame frame = new Frame($"ACK {receiver_receiving_frame}", false, "");
             frame.ShowAndMove();
         }
 
         private void BtnDebug1_Click(object sender, RoutedEventArgs e)
         {
             // Frame frame = new Frame("1", true);
-            sendingFrameList.Add(new Frame("0", true));
-            sendingFrameList.Add(new Frame("1", true));
-            sendingFrameList.Add(new Frame("2", true));
-            sendingFrameList.Add(new Frame("3", true));
+            //sendingFrameList.Add(new Frame("0", true));
+            //sendingFrameList.Add(new Frame("1", true));
+            //sendingFrameList.Add(new Frame("2", true));
+            //sendingFrameList.Add(new Frame("3", true));
         }
 
         private void BtnDebug2_Click(object sender, RoutedEventArgs e)
         {
-            Frame frame = new Frame("1", false);
+            //Frame frame = new Frame("1", false);
 
         }
         private int ParseIDFromAck(string ack)

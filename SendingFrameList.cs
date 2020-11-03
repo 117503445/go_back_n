@@ -31,18 +31,20 @@ namespace go_back_n
             else
             {
                 frames[0].ShowAndMove();
-                Console.WriteLine($"Go {frames[0].Content} {GetTimeStamp()}");
+                Console.WriteLine($"Go {frames[0].ID} {GetTimeStamp()}");
                 frames.RemoveAt(0);
             }
         }
 
+
+
         public void Add(Frame frame)
         {
-            Console.WriteLine($"Add {frame.Content} {GetTimeStamp()}");
+            Console.WriteLine($"Add {frame.ID} {GetTimeStamp()}");
             if (frames.Count == 0 && isCouldSend)
             {
                 frame.ShowAndMove();
-                Console.WriteLine($"Go Go {frame.Content} {GetTimeStamp()}");
+                Console.WriteLine($"Go Go {frame.ID} {GetTimeStamp()}");
 
                 isCouldSend = false;
                 timer.Start();
